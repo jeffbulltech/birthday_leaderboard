@@ -1,0 +1,545 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Jeff's 47th · DCC Leaderboard</title>
+  <link rel="icon" href="/favicon.ico" sizes="any" />
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Bangers&family=Roboto+Condensed:wght@400;700&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body { background: #0a0a0a; color: #F5E6C8; font-family: 'Roboto Condensed', sans-serif; min-height: 100vh; }
+
+    body::before {
+      content: '';
+      position: fixed; inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+      pointer-events: none; z-index: 100; opacity: 0.35;
+    }
+
+    /* ── LANDING ── */
+    #landing { display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; gap: 2rem; padding: 2rem; }
+    #landing h1 { font-family: 'Bangers', cursive; font-size: clamp(2.5rem, 8vw, 5rem); color: #FF1F8E; letter-spacing: 4px; text-shadow: 4px 4px 0 #000, 0 0 30px #FF1F8E88; text-align: center; }
+    #landing p { color: #FFD93D; font-size: 1.2rem; letter-spacing: 2px; text-transform: uppercase; }
+    .landing-links { display: flex; flex-direction: column; gap: 1rem; width: 100%; max-width: 380px; }
+    .landing-btn { display: block; padding: 1.2rem 2rem; text-align: center; text-decoration: none; font-family: 'Bangers', cursive; font-size: 1.8rem; letter-spacing: 3px; border: 3px solid; border-radius: 4px; transition: transform 0.1s; }
+    .landing-btn.display { color: #FFD93D; border-color: #FFD93D; background: #1a1a1a; box-shadow: 0 0 20px #FFD93D44; }
+    .landing-btn.admin   { color: #FF1F8E; border-color: #FF1F8E; background: #1a1a1a; box-shadow: 0 0 20px #FF1F8E44; }
+    .landing-btn:hover   { transform: scale(1.03); }
+
+    /* ── DISPLAY ── */
+    #display { min-height: 100vh; display: flex; flex-direction: column; }
+    #display-banner { width: 100%; overflow: hidden; display: none; }
+    #display-banner img { width: 100%; max-height: 220px; object-fit: cover; object-position: center top; display: block; }
+    .display-inner { flex: 1; display: flex; flex-direction: column; padding: 1.2rem 2rem 1rem; }
+    .display-header { text-align: center; margin-bottom: 1rem; }
+    .display-title-1 { font-family: 'Bangers', cursive; font-size: clamp(2rem, 6vw, 4.5rem); color: #FF1F8E; letter-spacing: 6px; text-shadow: 3px 3px 0 #000, 0 0 40px #FF1F8EAA; line-height: 1; }
+    .display-title-2 { font-family: 'Bangers', cursive; font-size: clamp(1.4rem, 4vw, 3rem); color: #FFD93D; letter-spacing: 8px; text-shadow: 2px 2px 0 #000; line-height: 1.2; }
+    .display-subtitle { font-size: clamp(0.8rem, 2vw, 1.1rem); color: #F5E6C8; letter-spacing: 4px; text-transform: uppercase; margin-top: 0.4rem; opacity: 0.7; }
+    .divider { border: none; border-top: 2px solid #FF1F8E44; margin: 0.6rem 0; }
+    .leaderboard { flex: 1; display: flex; flex-direction: column; max-width: 1000px; width: 100%; margin: 0 auto; }
+    .lb-row { display: grid; grid-template-columns: 80px 1fr auto; align-items: center; padding: 0.55rem 1rem; border-bottom: 1px solid #ffffff11; }
+    .lb-row:last-child { border-bottom: none; }
+    .lb-row.rank-1 { background: linear-gradient(90deg, #FFD93D18, transparent); }
+    .lb-row.glow { animation: rowGlow 0.8s ease-out; }
+    @keyframes rowGlow { 0% { background: #FF1F8E44; } 100% { background: transparent; } }
+    .lb-rank   { font-family: 'Bangers', cursive; font-size: clamp(1.8rem, 4vw, 3rem); color: #FF1F8E; text-shadow: 0 0 10px #FF1F8E88; }
+    .lb-row.rank-1 .lb-rank   { color: #FFD93D; text-shadow: 0 0 20px #FFD93DAA; font-size: clamp(2.2rem, 5vw, 3.8rem); }
+    .lb-name   { font-family: 'Bangers', cursive; font-size: clamp(1.4rem, 3vw, 2.6rem); color: #F5E6C8; letter-spacing: 2px; padding: 0 1rem; text-shadow: 2px 2px 0 #000; }
+    .lb-row.rank-1 .lb-name   { color: #FFD93D; font-size: clamp(1.8rem, 3.5vw, 3rem); }
+    .lb-points { font-family: 'Bangers', cursive; font-size: clamp(1.4rem, 3vw, 2.4rem); color: #fff; letter-spacing: 2px; }
+    .lb-row.rank-1 .lb-points { color: #FFD93D; text-shadow: 0 0 15px #FFD93D88; }
+    .display-footer { text-align: center; padding-top: 0.6rem; font-size: 0.75rem; color: #ffffff33; letter-spacing: 2px; text-transform: uppercase; }
+    .empty-msg { text-align: center; color: #ffffff33; font-size: 1.2rem; letter-spacing: 3px; margin: 4rem auto; text-transform: uppercase; }
+
+    /* ── CELEBRATION OVERLAY ── */
+    #celebration {
+      position: fixed; inset: 0; z-index: 50;
+      background: #000;
+      display: flex; align-items: center; justify-content: center;
+      opacity: 0; pointer-events: none;
+      transition: opacity 0.3s ease;
+    }
+    #celebration.active { opacity: 1; }
+    #celebration img { max-width: 100%; max-height: 100%; object-fit: contain; }
+
+    /* ── ADMIN ── */
+    #admin { min-height: 100vh; padding: 1rem; max-width: 540px; margin: 0 auto; }
+    .admin-header { text-align: center; padding: 1rem 0 0.5rem; }
+    .admin-title    { font-family: 'Bangers', cursive; font-size: 2rem; color: #FF1F8E; letter-spacing: 4px; }
+    .admin-subtitle { font-size: 0.75rem; color: #ffffff55; letter-spacing: 2px; text-transform: uppercase; margin-top: 0.2rem; }
+
+    .tab-bar { display: flex; border: 2px solid #FF1F8E; border-radius: 4px; overflow: hidden; margin: 1rem 0; }
+    .tab-btn { flex: 1; padding: 0.7rem; background: transparent; border: none; color: #FF1F8E; font-family: 'Bangers', cursive; font-size: 1.1rem; letter-spacing: 2px; cursor: pointer; transition: background 0.15s, color 0.15s; }
+    .tab-btn.active { background: #FF1F8E; color: #0a0a0a; }
+
+    .add-form { display: flex; gap: 0.5rem; margin-bottom: 1rem; }
+    .text-input { flex: 1; padding: 0.75rem 1rem; background: #1a1a1a; border: 2px solid #333; border-radius: 4px; color: #F5E6C8; font-size: 1rem; font-family: 'Roboto Condensed', sans-serif; width: 100%; }
+    .text-input:focus { outline: none; border-color: #FF1F8E; }
+    select.text-input { cursor: pointer; }
+    .btn-primary { padding: 0.75rem 1.2rem; background: #FF1F8E; border: none; border-radius: 4px; color: #0a0a0a; font-family: 'Bangers', cursive; font-size: 1.1rem; letter-spacing: 2px; cursor: pointer; white-space: nowrap; }
+    .btn-primary:active { opacity: 0.8; }
+    .btn-danger { padding: 0.5rem 0.75rem; background: transparent; border: 1px solid #ff444488; border-radius: 4px; color: #ff4444; font-size: 0.8rem; cursor: pointer; }
+
+    .section-label { font-size: 0.7rem; color: #ffffff55; letter-spacing: 3px; text-transform: uppercase; margin: 0.8rem 0 0.4rem; }
+    .crawler-list { display: flex; flex-direction: column; gap: 0.5rem; }
+    .crawler-item { display: flex; align-items: center; justify-content: space-between; padding: 0.6rem 0.8rem; background: #1a1a1a; border: 1px solid #333; border-radius: 4px; }
+    .crawler-item-pts { font-family: 'Bangers', cursive; font-size: 1.2rem; color: #FFD93D; margin-right: 0.5rem; }
+
+    .award-list { display: flex; flex-direction: column; gap: 0.4rem; max-height: 36vh; overflow-y: auto; }
+    .award-row { display: flex; align-items: center; justify-content: space-between; padding: 0.7rem 0.9rem; background: #1a1a1a; border: 2px solid #333; border-radius: 4px; cursor: pointer; }
+    .award-row.selected { border-color: #FF1F8E; background: #FF1F8E18; }
+    .award-row-pts { font-family: 'Bangers', cursive; font-size: 1.2rem; color: #FFD93D; }
+
+    .point-btns { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.5rem; margin: 0.5rem 0; }
+    .pt-btn { padding: 1rem 0.5rem; background: #1a1a1a; border: 2px solid #FF1F8E; border-radius: 4px; color: #FF1F8E; font-family: 'Bangers', cursive; font-size: 1.4rem; cursor: pointer; }
+    .pt-btn:active   { background: #FF1F8E; color: #0a0a0a; }
+    .pt-btn:disabled { opacity: 0.3; cursor: not-allowed; border-color: #333; color: #333; }
+
+    .undo-row { display: flex; align-items: center; gap: 0.5rem; margin: 0.3rem 0; }
+    .btn-undo { padding: 0.6rem 1rem; background: transparent; border: 1px solid #FFD93D88; border-radius: 4px; color: #FFD93D; font-family: 'Bangers', cursive; font-size: 1rem; letter-spacing: 2px; cursor: pointer; }
+    .btn-undo:disabled { opacity: 0.3; cursor: not-allowed; }
+    .undo-label { font-size: 0.75rem; color: #ffffff44; }
+
+    .settings-toggle { width: 100%; padding: 0.7rem; background: #111; border: 1px solid #333; border-radius: 4px; color: #ffffff66; font-family: 'Roboto Condensed', sans-serif; font-size: 0.85rem; letter-spacing: 2px; cursor: pointer; text-align: left; margin-top: 1rem; }
+    .settings-panel { background: #111; border: 1px solid #333; border-radius: 4px; padding: 1rem; margin-top: 0.5rem; display: flex; flex-direction: column; gap: 0.8rem; }
+    .settings-field { display: flex; flex-direction: column; gap: 0.3rem; }
+    .settings-field label { font-size: 0.7rem; color: #ffffff55; letter-spacing: 2px; text-transform: uppercase; }
+    .btn-nuclear { padding: 0.7rem; background: transparent; border: 2px solid #ff2222; border-radius: 4px; color: #ff2222; font-family: 'Bangers', cursive; font-size: 1rem; letter-spacing: 2px; cursor: pointer; width: 100%; }
+    .btn-nuclear:active { background: #ff222222; }
+
+    .toast { position: fixed; bottom: 2rem; left: 50%; transform: translateX(-50%); background: #FF1F8E; color: #0a0a0a; font-family: 'Bangers', cursive; font-size: 1.1rem; letter-spacing: 2px; padding: 0.6rem 1.5rem; border-radius: 4px; opacity: 0; transition: opacity 0.3s; pointer-events: none; z-index: 200; white-space: nowrap; }
+    .toast.show { opacity: 1; }
+
+    .hidden { display: none !important; }
+  </style>
+</head>
+<body>
+
+<!-- LANDING -->
+<div id="landing" class="hidden">
+  <h1>☠ JEFF'S 47TH ☠</h1>
+  <p>Floor 47 · Dungeons &amp; Degeneracy</p>
+  <div class="landing-links">
+    <a href="?screen=display" class="landing-btn display">📺 TV DISPLAY</a>
+    <a href="?screen=admin"   class="landing-btn admin">⚙ ADMIN PANEL</a>
+  </div>
+</div>
+
+<!-- DISPLAY -->
+<div id="display" class="hidden">
+  <div id="display-banner"><img id="banner-img" src="" alt="" /></div>
+  <div class="display-inner">
+    <div class="display-header">
+      <div class="display-title-1" id="disp-title-1">PARTY-GOER RANKINGS</div>
+      <div class="display-title-2" id="disp-title-2">JEFF'S 47TH</div>
+      <div class="display-subtitle" id="disp-subtitle">Floor 47 · Dungeons &amp; Degeneracy</div>
+    </div>
+    <hr class="divider" />
+    <div class="leaderboard" id="leaderboard-rows"></div>
+    <div class="display-footer" id="disp-footer">LAST UPDATED: —</div>
+  </div>
+  <div id="celebration"><img id="celeb-img" src="" alt="" /></div>
+  <audio id="celeb-audio" preload="auto"></audio>
+</div>
+
+<!-- ADMIN -->
+<div id="admin" class="hidden">
+  <div class="admin-header">
+    <div class="admin-title">⚙ ADMIN</div>
+    <div class="admin-subtitle">Jeff's 47th · DCC Leaderboard</div>
+  </div>
+
+  <div class="tab-bar">
+    <button class="tab-btn active" id="tab-add"   onclick="switchTab('add')">ADD CRAWLER</button>
+    <button class="tab-btn"        id="tab-award" onclick="switchTab('award')">AWARD POINTS</button>
+  </div>
+
+  <!-- ADD TAB -->
+  <div id="panel-add">
+    <div class="add-form">
+      <input class="text-input" id="new-name" type="text" placeholder="Character name…" style="flex:1" />
+      <button class="btn-primary" onclick="addCrawler()">ADD</button>
+    </div>
+    <div class="section-label">CURRENT CRAWLERS</div>
+    <div class="crawler-list" id="crawler-list"></div>
+  </div>
+
+  <!-- AWARD TAB -->
+  <div id="panel-award" class="hidden">
+    <div class="section-label">SELECT CRAWLER</div>
+    <div class="award-list" id="award-list"></div>
+    <div class="section-label">AWARD POINTS</div>
+    <div class="point-btns">
+      <button class="pt-btn" onclick="award(1)">+1</button>
+      <button class="pt-btn" onclick="award(3)">+3</button>
+      <button class="pt-btn" onclick="award(5)">+5</button>
+      <button class="pt-btn" onclick="award(10)">+10</button>
+      <button class="pt-btn" onclick="award(25)">+25</button>
+      <button class="pt-btn" onclick="award(50)">+50</button>
+    </div>
+    <div class="undo-row">
+      <button class="btn-undo" id="undo-btn" onclick="undoLast()" disabled>↩ UNDO</button>
+      <span class="undo-label" id="undo-label">No recent action</span>
+    </div>
+  </div>
+
+  <!-- SETTINGS -->
+  <button class="settings-toggle" onclick="toggleSettings()">▾ SETTINGS</button>
+  <div class="settings-panel hidden" id="settings-panel">
+    <div class="settings-field">
+      <label>Title Line 1</label>
+      <input class="text-input" id="cfg-title1" type="text" />
+    </div>
+    <div class="settings-field">
+      <label>Title Line 2</label>
+      <input class="text-input" id="cfg-title2" type="text" />
+    </div>
+    <div class="settings-field">
+      <label>Subtitle</label>
+      <input class="text-input" id="cfg-subtitle" type="text" />
+    </div>
+    <div class="settings-field">
+      <label>Banner Image</label>
+      <select class="text-input" id="cfg-banner"></select>
+    </div>
+    <div class="settings-field">
+      <label>Celebration Image</label>
+      <select class="text-input" id="cfg-celeb-image"></select>
+    </div>
+    <div class="settings-field">
+      <label>Celebration Audio</label>
+      <select class="text-input" id="cfg-celeb-audio"></select>
+    </div>
+    <button class="btn-primary" style="width:100%" onclick="saveSettings()">SAVE SETTINGS</button>
+    <button class="btn-nuclear" onclick="resetPoints()">☠ RESET ALL POINTS</button>
+    <button class="btn-nuclear" onclick="clearAll()">☠ CLEAR ALL CRAWLERS</button>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+  // ── Routing ──────────────────────────────────────────────────────────────
+  const SCREEN = new URLSearchParams(location.search).get('screen');
+  if (!SCREEN) {
+    document.getElementById('landing').classList.remove('hidden');
+  } else if (SCREEN === 'display') {
+    document.getElementById('display').classList.remove('hidden');
+    initDisplay();
+  } else if (SCREEN === 'admin') {
+    document.getElementById('admin').classList.remove('hidden');
+    initAdmin();
+  }
+
+  // ── API ──────────────────────────────────────────────────────────────────
+  async function api(method, path, body) {
+    const opts = { method, headers: { 'Content-Type': 'application/json' } };
+    if (body !== undefined) opts.body = JSON.stringify(body);
+    const res = await fetch('/api' + path, opts);
+    if (!res.ok) throw new Error(await res.text());
+    return res.json();
+  }
+  const GET    = path      => api('GET',    path);
+  const POST   = (path, b) => api('POST',   path, b);
+  const DELETE = path      => api('DELETE', path);
+
+  // ── DISPLAY ──────────────────────────────────────────────────────────────
+  let prevRanks    = {};
+  let lastCelebId  = null;
+  let celebPlaying = false;
+
+  function initDisplay() {
+    fetchAndRender();
+    setInterval(fetchAndRender, 3000);
+  }
+
+  async function fetchAndRender() {
+    try {
+      const state = await GET('/state');
+      renderDisplay(state);
+      handleCelebration(state.celebration);
+    } catch (e) { console.error('Display poll error', e); }
+  }
+
+  function renderDisplay({ crawlers, settings }) {
+    document.getElementById('disp-title-1').textContent  = settings.title1;
+    document.getElementById('disp-title-2').textContent  = settings.title2;
+    document.getElementById('disp-subtitle').textContent = settings.subtitle;
+
+    const banner    = document.getElementById('display-banner');
+    const bannerImg = document.getElementById('banner-img');
+    if (settings.bannerImage) {
+      bannerImg.src       = '/images/' + encodeURIComponent(settings.bannerImage);
+      banner.style.display = 'block';
+    } else {
+      banner.style.display = 'none';
+    }
+
+    const sorted    = [...crawlers].sort((a, b) => b.points - a.points).slice(0, 10);
+    const container = document.getElementById('leaderboard-rows');
+    if (sorted.length === 0) {
+      container.innerHTML = '<div class="empty-msg">☠ No crawlers yet ☠</div>';
+      return;
+    }
+    container.innerHTML = '';
+    sorted.forEach((c, i) => {
+      const rank = i + 1;
+      const row  = document.createElement('div');
+      row.className = 'lb-row' + (rank === 1 ? ' rank-1' : '');
+      if (prevRanks[c.id] !== undefined && prevRanks[c.id] !== rank) row.classList.add('glow');
+      row.innerHTML = `
+        <div class="lb-rank">${rank === 1 ? '☠' : rank}</div>
+        <div class="lb-name">${rank === 1 ? '◆ ' : ''}${esc(c.name)}</div>
+        <div class="lb-points">${c.points} PTS</div>`;
+      container.appendChild(row);
+    });
+    prevRanks = {};
+    sorted.forEach((c, i) => { prevRanks[c.id] = i + 1; });
+    document.getElementById('disp-footer').textContent =
+      'LAST UPDATED: ' + new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+  }
+
+  function handleCelebration(celeb) {
+    if (!celeb || celeb.id === lastCelebId || celebPlaying) return;
+    lastCelebId  = celeb.id;
+    celebPlaying = true;
+
+    const overlay    = document.getElementById('celebration');
+    const celebImg   = document.getElementById('celeb-img');
+    const celebAudio = document.getElementById('celeb-audio');
+
+    if (celeb.image) {
+      celebImg.src          = '/images/' + encodeURIComponent(celeb.image);
+      celebImg.style.display = 'block';
+    } else {
+      celebImg.style.display = 'none';
+    }
+
+    if (celeb.audio) {
+      celebAudio.src         = '/audio/' + encodeURIComponent(celeb.audio);
+      celebAudio.currentTime = 0;
+      celebAudio.play().catch(() => {});
+    }
+
+    overlay.classList.add('active');
+    setTimeout(async () => {
+      overlay.classList.remove('active');
+      celebPlaying = false;
+      try { await POST('/clear-celebration', {}); } catch {}
+    }, 3000);
+  }
+
+  // ── ADMIN ────────────────────────────────────────────────────────────────
+  let selectedId  = null;
+  let adminState  = null;
+  let availImages = [];
+  let availAudio  = [];
+
+  async function initAdmin() {
+    let stateRes;
+    try {
+      stateRes = await fetch('/api/state');
+    } catch (e) {
+      toast('Network error — is the server running?');
+      return;
+    }
+    if (!stateRes.ok) {
+      toast('Server error ' + stateRes.status);
+      return;
+    }
+    try {
+      adminState = await stateRes.json();
+    } catch (e) {
+      toast('Bad response from server');
+      return;
+    }
+    renderAdminLists();
+    updateUndoUI();
+  }
+
+  async function loadMediaAndPopulate() {
+    try {
+      const r = await fetch('/api/images');
+      availImages = (await r.json()).images || [];
+    } catch { availImages = []; }
+    try {
+      const r = await fetch('/api/audio');
+      availAudio = (await r.json()).audio || [];
+    } catch { availAudio = []; }
+    populateSettingsUI();
+  }
+
+  function populateSettingsUI() {
+    const s = adminState.settings;
+    document.getElementById('cfg-title1').value   = s.title1   || '';
+    document.getElementById('cfg-title2').value   = s.title2   || '';
+    document.getElementById('cfg-subtitle').value = s.subtitle || '';
+
+    buildSelect('cfg-banner',      availImages, s.bannerImage,       '— None —');
+    buildSelect('cfg-celeb-image', availImages, s.celebrationImage,  '— None —');
+    buildSelect('cfg-celeb-audio', availAudio,  s.celebrationAudio,  '— None —');
+  }
+
+  function buildSelect(id, files, current, placeholder) {
+    const sel = document.getElementById(id);
+    sel.innerHTML = `<option value="">${placeholder}</option>` +
+      files.map(f => `<option value="${esc(f)}"${current === f ? ' selected' : ''}>${esc(f)}</option>`).join('');
+  }
+
+  function renderAdminLists() {
+    if (!adminState) return;
+    const { crawlers } = adminState;
+
+    const cl = document.getElementById('crawler-list');
+    cl.innerHTML = '';
+    if (crawlers.length === 0) {
+      cl.innerHTML = '<div style="color:#ffffff33;font-size:0.85rem;text-align:center;padding:1rem">No crawlers yet</div>';
+    } else {
+      crawlers.forEach(c => {
+        const el = document.createElement('div');
+        el.className = 'crawler-item';
+        el.innerHTML = `
+          <span>${esc(c.name)}</span>
+          <div style="display:flex;align-items:center;gap:0.5rem">
+            <span class="crawler-item-pts">${c.points} pts</span>
+            <button class="btn-danger">REMOVE</button>
+          </div>`;
+        el.querySelector('.btn-danger').addEventListener('click', () => removeCrawler(c.id));
+        cl.appendChild(el);
+      });
+    }
+
+    const al = document.getElementById('award-list');
+    al.innerHTML = '';
+    [...crawlers].sort((a, b) => b.points - a.points).forEach(c => {
+      const el = document.createElement('div');
+      el.className = 'award-row' + (c.id === selectedId ? ' selected' : '');
+      el.innerHTML = `<span>${esc(c.name)}</span><span class="award-row-pts">${c.points} pts</span>`;
+      el.addEventListener('click', () => { selectedId = c.id; renderAdminLists(); });
+      al.appendChild(el);
+    });
+
+    document.querySelectorAll('.pt-btn').forEach(b => b.disabled = !selectedId);
+  }
+
+  function updateUndoUI() {
+    const last = adminState && adminState.lastAction;
+    document.getElementById('undo-btn').disabled      = !last;
+    document.getElementById('undo-label').textContent = last
+      ? `Undo +${last.delta} to ${last.name}` : 'No recent action';
+  }
+
+  function switchTab(tab) {
+    document.getElementById('tab-add').classList.toggle('active',    tab === 'add');
+    document.getElementById('tab-award').classList.toggle('active',  tab === 'award');
+    document.getElementById('panel-add').classList.toggle('hidden',   tab !== 'add');
+    document.getElementById('panel-award').classList.toggle('hidden', tab !== 'award');
+  }
+
+  async function addCrawler() {
+    const input = document.getElementById('new-name');
+    const name  = input.value.trim();
+    if (!name) return;
+    try {
+      adminState = await POST('/crawlers', { name });
+      input.value = '';
+      renderAdminLists();
+      toast('Added: ' + name);
+    } catch { toast('Error adding crawler'); }
+  }
+
+  document.getElementById('new-name').addEventListener('keydown', e => {
+    if (e.key === 'Enter') addCrawler();
+  });
+
+  async function removeCrawler(id) {
+    if (!confirm('Remove this crawler?')) return;
+    try {
+      adminState = await DELETE('/crawlers/' + id);
+      if (selectedId === id) selectedId = null;
+      renderAdminLists();
+    } catch { toast('Error removing crawler'); }
+  }
+
+  async function award(pts) {
+    if (!selectedId) return;
+    try {
+      adminState = await POST('/crawlers/' + selectedId + '/points', { delta: pts });
+      renderAdminLists();
+      updateUndoUI();
+      const c = adminState.crawlers.find(x => x.id === selectedId);
+      toast(`+${pts} → ${c ? c.name : '?'}`);
+    } catch { toast('Error awarding points'); }
+  }
+
+  async function undoLast() {
+    try {
+      adminState = await POST('/undo', {});
+      renderAdminLists();
+      updateUndoUI();
+      toast('Undone!');
+    } catch { toast('Nothing to undo'); }
+  }
+
+  async function toggleSettings() {
+    const panel   = document.getElementById('settings-panel');
+    const opening = panel.classList.contains('hidden');
+    panel.classList.toggle('hidden');
+    if (opening) await loadMediaAndPopulate();
+  }
+
+  async function saveSettings() {
+    const payload = {
+      title1:           document.getElementById('cfg-title1').value,
+      title2:           document.getElementById('cfg-title2').value,
+      subtitle:         document.getElementById('cfg-subtitle').value,
+      bannerImage:      document.getElementById('cfg-banner').value,
+      celebrationImage: document.getElementById('cfg-celeb-image').value,
+      celebrationAudio: document.getElementById('cfg-celeb-audio').value,
+    };
+    try {
+      adminState = await POST('/settings', payload);
+      toast('Settings saved!');
+    } catch { toast('Error saving settings'); }
+  }
+
+  async function resetPoints() {
+    if (prompt('Type RESET to confirm:') !== 'RESET') return;
+    try {
+      adminState = await POST('/reset-points', { confirm: 'RESET' });
+      renderAdminLists();
+      updateUndoUI();
+      toast('All points reset!');
+    } catch { toast('Error'); }
+  }
+
+  async function clearAll() {
+    if (prompt('Type RESET to confirm:') !== 'RESET') return;
+    try {
+      adminState = await POST('/clear-all', { confirm: 'RESET' });
+      selectedId = null;
+      renderAdminLists();
+      updateUndoUI();
+      toast('All crawlers cleared!');
+    } catch { toast('Error'); }
+  }
+
+  // ── Utils ────────────────────────────────────────────────────────────────
+  function esc(s) {
+    return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  }
+  let toastTimer;
+  function toast(msg) {
+    const el = document.getElementById('toast');
+    el.textContent = msg;
+    el.classList.add('show');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => el.classList.remove('show'), 2200);
+  }
+</script>
+</body>
+</html>

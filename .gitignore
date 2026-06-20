@@ -1,0 +1,20 @@
+# State (auto-generated at runtime)
+state.json
+
+# Media — add your own files locally, don't commit them
+images/*
+audio/*
+!images/.gitkeep
+!audio/.gitkeep
+
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+.env
+venv/
+.venv/
+env/
+
+# macOS
+.DS_Store

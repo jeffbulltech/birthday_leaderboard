@@ -4,7 +4,9 @@
 
 # Dungeon Crawler Carl themed party-in-a-box
 
-A real-time party leaderboard app built for **Jeff's 47th Birthday — Dungeons & Degeneracy**. Two-screen browser app: a TV display screen for the room and a mobile admin panel for awarding points on the fly.
+Everything you need to host your own **Dungeon Crawler Carl themed party**. This repo is a party-in-a-box: a collection of resources, ideas, and tools purpose-built for an immersive DCC party experience.
+
+The centerpiece is a **real-time party leaderboard app** — a two-screen browser app with a TV display screen for the room and a mobile admin panel so the host can award points on the fly all night long.
 
 ## Features
 

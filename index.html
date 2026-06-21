@@ -30,30 +30,109 @@
     .landing-btn.admin   { color: #FF1F8E; border-color: #FF1F8E; background: #1a1a1a; box-shadow: 0 0 20px #FF1F8E44; }
     .landing-btn:hover   { transform: scale(1.03); }
 
-    /* ── DISPLAY ── */
+    /* ── DISPLAY — shared ── */
     #display { min-height: 100vh; display: flex; flex-direction: column; }
     #display-banner { width: 100%; overflow: hidden; display: none; }
-    #display-banner img { width: 100%; max-height: 220px; object-fit: cover; object-position: center top; display: block; }
-    .display-inner { flex: 1; display: flex; flex-direction: column; padding: 1.2rem 2rem 1rem; }
-    .display-header { text-align: center; margin-bottom: 1rem; }
-    .display-title-1 { font-family: 'Bangers', cursive; font-size: clamp(2rem, 6vw, 4.5rem); color: #FF1F8E; letter-spacing: 6px; text-shadow: 3px 3px 0 #000, 0 0 40px #FF1F8EAA; line-height: 1; }
-    .display-title-2 { font-family: 'Bangers', cursive; font-size: clamp(1.4rem, 4vw, 3rem); color: #FFD93D; letter-spacing: 8px; text-shadow: 2px 2px 0 #000; line-height: 1.2; }
-    .display-subtitle { font-size: clamp(0.8rem, 2vw, 1.1rem); color: #F5E6C8; letter-spacing: 4px; text-transform: uppercase; margin-top: 0.4rem; opacity: 0.7; }
-    .divider { border: none; border-top: 2px solid #FF1F8E44; margin: 0.6rem 0; }
-    .leaderboard { flex: 1; display: flex; flex-direction: column; max-width: 1000px; width: 100%; margin: 0 auto; }
-    .lb-row { display: grid; grid-template-columns: 80px 1fr auto; align-items: center; padding: 0.55rem 1rem; border-bottom: 1px solid #ffffff11; }
+    #display-banner img { width: 100%; max-height: 200px; object-fit: cover; object-position: center top; display: block; }
+
+    /* ── DISPLAY — body (full or split) ── */
+    .display-body { flex: 1; display: flex; }
+
+    /* Full-width mode */
+    .display-body.full .trivia-panel  { display: none; }
+    .display-body.full .lb-panel      { flex: 1; padding: 1.2rem 2rem 1rem; }
+
+    /* Split mode */
+    .display-body.split .trivia-panel { width: 50%; border-right: 2px solid #FF1F8E33; display: flex; flex-direction: column; }
+    .display-body.split .lb-panel     { width: 50%; padding: 1rem 1.5rem; }
+
+    /* ── LEADERBOARD PANEL ── */
+    .lb-panel { display: flex; flex-direction: column; }
+    .display-header { text-align: center; margin-bottom: 0.8rem; }
+    .display-title-1 { font-family: 'Bangers', cursive; font-size: clamp(1.6rem, 4.5vw, 4rem); color: #FF1F8E; letter-spacing: 6px; text-shadow: 3px 3px 0 #000, 0 0 40px #FF1F8EAA; line-height: 1; }
+    .display-title-2 { font-family: 'Bangers', cursive; font-size: clamp(1.1rem, 3vw, 2.5rem); color: #FFD93D; letter-spacing: 6px; text-shadow: 2px 2px 0 #000; line-height: 1.2; }
+    .display-subtitle { font-size: clamp(0.65rem, 1.5vw, 1rem); color: #F5E6C8; letter-spacing: 3px; text-transform: uppercase; margin-top: 0.3rem; opacity: 0.7; }
+    .divider { border: none; border-top: 2px solid #FF1F8E44; margin: 0.5rem 0; }
+    .leaderboard { flex: 1; display: flex; flex-direction: column; }
+    .lb-row { display: grid; grid-template-columns: 60px 1fr auto; align-items: center; padding: 0.45rem 0.5rem; border-bottom: 1px solid #ffffff11; }
     .lb-row:last-child { border-bottom: none; }
     .lb-row.rank-1 { background: linear-gradient(90deg, #FFD93D18, transparent); }
     .lb-row.glow { animation: rowGlow 0.8s ease-out; }
     @keyframes rowGlow { 0% { background: #FF1F8E44; } 100% { background: transparent; } }
-    .lb-rank   { font-family: 'Bangers', cursive; font-size: clamp(1.8rem, 4vw, 3rem); color: #FF1F8E; text-shadow: 0 0 10px #FF1F8E88; }
-    .lb-row.rank-1 .lb-rank   { color: #FFD93D; text-shadow: 0 0 20px #FFD93DAA; font-size: clamp(2.2rem, 5vw, 3.8rem); }
-    .lb-name   { font-family: 'Bangers', cursive; font-size: clamp(1.4rem, 3vw, 2.6rem); color: #F5E6C8; letter-spacing: 2px; padding: 0 1rem; text-shadow: 2px 2px 0 #000; }
-    .lb-row.rank-1 .lb-name   { color: #FFD93D; font-size: clamp(1.8rem, 3.5vw, 3rem); }
-    .lb-points { font-family: 'Bangers', cursive; font-size: clamp(1.4rem, 3vw, 2.4rem); color: #fff; letter-spacing: 2px; }
+    .lb-rank   { font-family: 'Bangers', cursive; font-size: clamp(1.4rem, 3vw, 2.5rem); color: #FF1F8E; text-shadow: 0 0 10px #FF1F8E88; }
+    .lb-row.rank-1 .lb-rank   { color: #FFD93D; text-shadow: 0 0 20px #FFD93DAA; font-size: clamp(1.7rem, 3.5vw, 3rem); }
+    .lb-name   { font-family: 'Bangers', cursive; font-size: clamp(1.1rem, 2.5vw, 2.2rem); color: #F5E6C8; letter-spacing: 2px; padding: 0 0.5rem; text-shadow: 2px 2px 0 #000; }
+    .lb-row.rank-1 .lb-name   { color: #FFD93D; font-size: clamp(1.4rem, 3vw, 2.6rem); }
+    .lb-points { font-family: 'Bangers', cursive; font-size: clamp(1.1rem, 2.5vw, 2rem); color: #fff; letter-spacing: 2px; }
     .lb-row.rank-1 .lb-points { color: #FFD93D; text-shadow: 0 0 15px #FFD93D88; }
-    .display-footer { text-align: center; padding-top: 0.6rem; font-size: 0.75rem; color: #ffffff33; letter-spacing: 2px; text-transform: uppercase; }
+    .display-footer { text-align: center; padding-top: 0.5rem; font-size: 0.7rem; color: #ffffff33; letter-spacing: 2px; text-transform: uppercase; }
     .empty-msg { text-align: center; color: #ffffff33; font-size: 1.2rem; letter-spacing: 3px; margin: 4rem auto; text-transform: uppercase; }
+
+    /* ── TRIVIA PANEL ── */
+    .trivia-panel { position: relative; overflow: hidden; background: #060606; }
+
+    /* Rotating image */
+    .trivia-img-wrap { position: absolute; inset: 0; }
+    .trivia-img-wrap img { width: 100%; height: 100%; object-fit: cover; display: block; }
+    .trivia-img-wrap.hidden { display: none; }
+
+    /* Question / answer overlay */
+    .trivia-content {
+      position: absolute; inset: 0;
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      padding: 2rem;
+      background: #0a0a0aee;
+    }
+    .trivia-content.hidden { display: none; }
+    .trivia-phase-label {
+      font-family: 'Bangers', cursive;
+      font-size: clamp(1rem, 2vw, 1.6rem);
+      color: #FF1F8E;
+      letter-spacing: 6px;
+      text-shadow: 0 0 20px #FF1F8E88;
+      margin-bottom: 1.5rem;
+      text-transform: uppercase;
+    }
+    .trivia-text {
+      font-family: 'Bangers', cursive;
+      font-size: clamp(1.4rem, 3vw, 2.6rem);
+      color: #FFD93D;
+      letter-spacing: 2px;
+      text-align: center;
+      line-height: 1.3;
+      text-shadow: 2px 2px 0 #000;
+    }
+    .trivia-answer-text {
+      font-family: 'Bangers', cursive;
+      font-size: clamp(1.6rem, 3.5vw, 3rem);
+      color: #F5E6C8;
+      letter-spacing: 2px;
+      text-align: center;
+      line-height: 1.3;
+      text-shadow: 2px 2px 0 #000;
+      margin-top: 1rem;
+    }
+    .trivia-decoration {
+      font-size: clamp(2rem, 4vw, 4rem);
+      color: #FF1F8E44;
+      margin-top: 2rem;
+      letter-spacing: 8px;
+    }
+
+    /* Empty trivia (no images, between questions) */
+    .trivia-idle {
+      position: absolute; inset: 0;
+      display: flex; align-items: center; justify-content: center;
+      background: #060606;
+    }
+    .trivia-idle.hidden { display: none; }
+    .trivia-idle-text {
+      font-family: 'Bangers', cursive;
+      font-size: clamp(2rem, 5vw, 5rem);
+      color: #FF1F8E22;
+      letter-spacing: 8px;
+      text-align: center;
+    }
 
     /* ── CELEBRATION OVERLAY ── */
     #celebration {
@@ -70,7 +149,7 @@
     #admin { min-height: 100vh; padding: 1rem; max-width: 540px; margin: 0 auto; }
     .admin-header { text-align: center; padding: 1rem 0 0.5rem; }
     .admin-title    { font-family: 'Bangers', cursive; font-size: 2rem; color: #FF1F8E; letter-spacing: 4px; }
-    .admin-subtitle { font-size: 0.75rem; color: #ffffff55; letter-spacing: 2px; text-transform: uppercase; margin-top: 0.2rem; }
+    .admin-subtitle { font-size: 0.75rem; color: #ffffffaa; letter-spacing: 2px; text-transform: uppercase; margin-top: 0.2rem; }
 
     .tab-bar { display: flex; border: 2px solid #FF1F8E; border-radius: 4px; overflow: hidden; margin: 1rem 0; }
     .tab-btn { flex: 1; padding: 0.7rem; background: transparent; border: none; color: #FF1F8E; font-family: 'Bangers', cursive; font-size: 1.1rem; letter-spacing: 2px; cursor: pointer; transition: background 0.15s, color 0.15s; }
@@ -80,11 +159,12 @@
     .text-input { flex: 1; padding: 0.75rem 1rem; background: #1a1a1a; border: 2px solid #333; border-radius: 4px; color: #F5E6C8; font-size: 1rem; font-family: 'Roboto Condensed', sans-serif; width: 100%; }
     .text-input:focus { outline: none; border-color: #FF1F8E; }
     select.text-input { cursor: pointer; }
+    input[type="number"].text-input { -moz-appearance: textfield; }
     .btn-primary { padding: 0.75rem 1.2rem; background: #FF1F8E; border: none; border-radius: 4px; color: #0a0a0a; font-family: 'Bangers', cursive; font-size: 1.1rem; letter-spacing: 2px; cursor: pointer; white-space: nowrap; }
     .btn-primary:active { opacity: 0.8; }
-    .btn-danger { padding: 0.5rem 0.75rem; background: transparent; border: 1px solid #ff444488; border-radius: 4px; color: #ff4444; font-size: 0.8rem; cursor: pointer; }
+    .btn-danger { padding: 0.5rem 0.75rem; background: transparent; border: 1px solid #ff444488; border-radius: 4px; color: #ff4444; font-size: 0.8rem; cursor: pointer; white-space: nowrap; }
 
-    .section-label { font-size: 0.7rem; color: #ffffff55; letter-spacing: 3px; text-transform: uppercase; margin: 0.8rem 0 0.4rem; }
+    .section-label { font-size: 0.7rem; color: #ffffffaa; letter-spacing: 3px; text-transform: uppercase; margin: 0.8rem 0 0.4rem; }
     .crawler-list { display: flex; flex-direction: column; gap: 0.5rem; }
     .crawler-item { display: flex; align-items: center; justify-content: space-between; padding: 0.6rem 0.8rem; background: #1a1a1a; border: 1px solid #333; border-radius: 4px; }
     .crawler-item-pts { font-family: 'Bangers', cursive; font-size: 1.2rem; color: #FFD93D; margin-right: 0.5rem; }
@@ -102,14 +182,47 @@
     .undo-row { display: flex; align-items: center; gap: 0.5rem; margin: 0.3rem 0; }
     .btn-undo { padding: 0.6rem 1rem; background: transparent; border: 1px solid #FFD93D88; border-radius: 4px; color: #FFD93D; font-family: 'Bangers', cursive; font-size: 1rem; letter-spacing: 2px; cursor: pointer; }
     .btn-undo:disabled { opacity: 0.3; cursor: not-allowed; }
-    .undo-label { font-size: 0.75rem; color: #ffffff44; }
+    .undo-label { font-size: 0.75rem; color: #ffffffaa; }
 
-    .settings-toggle { width: 100%; padding: 0.7rem; background: #111; border: 1px solid #333; border-radius: 4px; color: #ffffff66; font-family: 'Roboto Condensed', sans-serif; font-size: 0.85rem; letter-spacing: 2px; cursor: pointer; text-align: left; margin-top: 1rem; }
-    .settings-panel { background: #111; border: 1px solid #333; border-radius: 4px; padding: 1rem; margin-top: 0.5rem; display: flex; flex-direction: column; gap: 0.8rem; }
+    /* Collapsible panels */
+    .panel-toggle { width: 100%; padding: 0.7rem 1rem; background: #111; border: 1px solid #333; border-radius: 4px; color: #ffffffcc; font-family: 'Roboto Condensed', sans-serif; font-size: 0.85rem; letter-spacing: 2px; cursor: pointer; text-align: left; margin-top: 0.8rem; display: flex; justify-content: space-between; align-items: center; }
+    .panel-toggle .arrow { transition: transform 0.2s; }
+    .panel-toggle.open .arrow { transform: rotate(180deg); }
+    .collapsible-panel { background: #111; border: 1px solid #333; border-top: none; border-radius: 0 0 4px 4px; padding: 1rem; display: flex; flex-direction: column; gap: 0.8rem; }
     .settings-field { display: flex; flex-direction: column; gap: 0.3rem; }
-    .settings-field label { font-size: 0.7rem; color: #ffffff55; letter-spacing: 2px; text-transform: uppercase; }
+    .settings-field label { font-size: 0.7rem; color: #ffffffaa; letter-spacing: 2px; text-transform: uppercase; }
     .btn-nuclear { padding: 0.7rem; background: transparent; border: 2px solid #ff2222; border-radius: 4px; color: #ff2222; font-family: 'Bangers', cursive; font-size: 1rem; letter-spacing: 2px; cursor: pointer; width: 100%; }
     .btn-nuclear:active { background: #ff222222; }
+
+    /* Trivia enable toggle */
+    .trivia-toggle-row { display: flex; align-items: center; justify-content: space-between; padding: 0.5rem 0; }
+    .trivia-toggle-row span { font-size: 0.85rem; color: #F5E6C8; letter-spacing: 1px; }
+    .btn-toggle { padding: 0.5rem 1.2rem; border: 2px solid #333; border-radius: 4px; background: #1a1a1a; color: #ffffff55; font-family: 'Bangers', cursive; font-size: 1rem; letter-spacing: 2px; cursor: pointer; transition: all 0.15s; min-width: 110px; text-align: center; }
+    .btn-toggle.on { border-color: #FF1F8E; color: #FF1F8E; background: #FF1F8E18; }
+
+    /* Duration grid */
+    .duration-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.6rem; }
+    .duration-field { display: flex; flex-direction: column; gap: 0.25rem; }
+    .duration-field label { font-size: 0.65rem; color: #ffffffaa; letter-spacing: 1px; text-transform: uppercase; }
+    .duration-input { padding: 0.5rem 0.75rem; background: #1a1a1a; border: 1px solid #333; border-radius: 4px; color: #F5E6C8; font-size: 1rem; font-family: 'Roboto Condensed', sans-serif; width: 100%; }
+    .duration-input:focus { outline: none; border-color: #FF1F8E; }
+
+    /* Question list */
+    .question-list { display: flex; flex-direction: column; gap: 0.4rem; max-height: 30vh; overflow-y: auto; }
+    .question-item { display: flex; gap: 0.5rem; align-items: flex-start; padding: 0.6rem 0.7rem; background: #1a1a1a; border: 1px solid #333; border-radius: 4px; }
+    .question-num { font-family: 'Bangers', cursive; font-size: 1rem; color: #FF1F8E; min-width: 28px; padding-top: 2px; }
+    .question-body { flex: 1; min-width: 0; }
+    .question-text { font-size: 0.9rem; color: #F5E6C8; line-height: 1.3; word-break: break-word; }
+    .question-answer { font-size: 0.8rem; color: #FFD93D; margin-top: 0.2rem; }
+
+    /* Add question form */
+    .add-q-form { display: flex; flex-direction: column; gap: 0.4rem; }
+    .add-q-form textarea { resize: vertical; min-height: 60px; }
+
+    /* CSV import */
+    .import-label { display: block; padding: 0.65rem 1rem; background: #1a1a1a; border: 2px dashed #333; border-radius: 4px; color: #ffffff66; font-size: 0.85rem; letter-spacing: 2px; text-transform: uppercase; cursor: pointer; text-align: center; transition: border-color 0.15s, color 0.15s; }
+    .import-label:hover { border-color: #FF1F8E55; color: #FF1F8E88; }
+    .import-hint { font-size: 0.65rem; color: #ffffff33; letter-spacing: 1px; text-align: center; }
 
     .toast { position: fixed; bottom: 2rem; left: 50%; transform: translateX(-50%); background: #FF1F8E; color: #0a0a0a; font-family: 'Bangers', cursive; font-size: 1.1rem; letter-spacing: 2px; padding: 0.6rem 1.5rem; border-radius: 4px; opacity: 0; transition: opacity 0.3s; pointer-events: none; z-index: 200; white-space: nowrap; }
     .toast.show { opacity: 1; }
@@ -119,7 +232,7 @@
 </head>
 <body>
 
-<!-- LANDING -->
+<!-- ── LANDING ── -->
 <div id="landing" class="hidden">
   <h1>☠ JEFF'S 47TH ☠</h1>
   <p>Floor 47 · Dungeons &amp; Degeneracy</p>
@@ -129,24 +242,48 @@
   </div>
 </div>
 
-<!-- DISPLAY -->
+<!-- ── DISPLAY ── -->
 <div id="display" class="hidden">
   <div id="display-banner"><img id="banner-img" src="" alt="" /></div>
-  <div class="display-inner">
-    <div class="display-header">
-      <div class="display-title-1" id="disp-title-1">PARTY-GOER RANKINGS</div>
-      <div class="display-title-2" id="disp-title-2">JEFF'S 47TH</div>
-      <div class="display-subtitle" id="disp-subtitle">Floor 47 · Dungeons &amp; Degeneracy</div>
+
+  <div class="display-body full" id="display-body">
+
+    <!-- Trivia panel (left in split mode) -->
+    <div class="trivia-panel" id="trivia-panel">
+      <div class="trivia-idle" id="trivia-idle">
+        <div class="trivia-idle-text">☠ ☠ ☠</div>
+      </div>
+      <div class="trivia-img-wrap hidden" id="trivia-img-wrap">
+        <img id="trivia-img" src="" alt="" />
+      </div>
+      <div class="trivia-content hidden" id="trivia-content">
+        <div class="trivia-phase-label" id="trivia-phase-label">TRIVIA</div>
+        <div class="trivia-text" id="trivia-main-text"></div>
+        <div class="trivia-answer-text hidden" id="trivia-answer-text"></div>
+        <div class="trivia-decoration">☠ ☠ ☠</div>
+      </div>
     </div>
-    <hr class="divider" />
-    <div class="leaderboard" id="leaderboard-rows"></div>
-    <div class="display-footer" id="disp-footer">LAST UPDATED: —</div>
+
+    <!-- Leaderboard panel (right in split, full otherwise) -->
+    <div class="lb-panel" id="lb-panel">
+      <div class="display-header">
+        <div class="display-title-1" id="disp-title-1">PARTY-GOER RANKINGS</div>
+        <div class="display-title-2" id="disp-title-2">JEFF'S 47TH</div>
+        <div class="display-subtitle"  id="disp-subtitle">Floor 47 · Dungeons &amp; Degeneracy</div>
+      </div>
+      <hr class="divider" />
+      <div class="leaderboard" id="leaderboard-rows"></div>
+      <div class="display-footer" id="disp-footer">LAST UPDATED: —</div>
+    </div>
+
   </div>
+
+  <!-- Celebration overlay -->
   <div id="celebration"><img id="celeb-img" src="" alt="" /></div>
   <audio id="celeb-audio" preload="auto"></audio>
 </div>
 
-<!-- ADMIN -->
+<!-- ── ADMIN ── -->
 <div id="admin" class="hidden">
   <div class="admin-header">
     <div class="admin-title">⚙ ADMIN</div>
@@ -187,9 +324,11 @@
     </div>
   </div>
 
-  <!-- SETTINGS -->
-  <button class="settings-toggle" onclick="toggleSettings()">▾ SETTINGS</button>
-  <div class="settings-panel hidden" id="settings-panel">
+  <!-- SETTINGS panel -->
+  <button class="panel-toggle" id="settings-toggle" onclick="togglePanel('settings')">
+    <span>⚙ SETTINGS</span><span class="arrow">▾</span>
+  </button>
+  <div class="collapsible-panel hidden" id="settings-panel">
     <div class="settings-field">
       <label>Title Line 1</label>
       <input class="text-input" id="cfg-title1" type="text" />
@@ -203,11 +342,11 @@
       <input class="text-input" id="cfg-subtitle" type="text" />
     </div>
     <div class="settings-field">
-      <label>Banner Image</label>
+      <label>Banner Image <span style="text-transform:none;letter-spacing:0;font-size:0.85em;color:#ffffffaa">(suggested: 6:1 to 8:1 landscape)</span></label>
       <select class="text-input" id="cfg-banner"></select>
     </div>
     <div class="settings-field">
-      <label>Celebration Image</label>
+      <label>Celebration Image <span style="text-transform:none;letter-spacing:0;font-size:0.85em;color:#ffffffaa">(suggested: 1:1 square)</span></label>
       <select class="text-input" id="cfg-celeb-image"></select>
     </div>
     <div class="settings-field">
@@ -218,6 +357,59 @@
     <button class="btn-nuclear" onclick="resetPoints()">☠ RESET ALL POINTS</button>
     <button class="btn-nuclear" onclick="clearAll()">☠ CLEAR ALL CRAWLERS</button>
   </div>
+
+  <!-- TRIVIA panel -->
+  <button class="panel-toggle" id="trivia-toggle" onclick="togglePanel('trivia')">
+    <span>☠ TRIVIA</span><span class="arrow">▾</span>
+  </button>
+  <div class="collapsible-panel hidden" id="trivia-panel-admin">
+
+    <div class="trivia-toggle-row">
+      <span>Trivia on Display Screen</span>
+      <button class="btn-toggle" id="trivia-enable-btn" onclick="toggleTriviaEnabled()">DISABLED</button>
+    </div>
+
+    <div class="section-label">TIMING (seconds)</div>
+    <div class="duration-grid">
+      <div class="duration-field">
+        <label>Question Interval</label>
+        <input class="duration-input" id="cfg-q-interval" type="number" min="10" placeholder="600" />
+      </div>
+      <div class="duration-field">
+        <label>Question Duration</label>
+        <input class="duration-input" id="cfg-q-duration" type="number" min="5"  placeholder="120" />
+      </div>
+      <div class="duration-field">
+        <label>Answer Duration</label>
+        <input class="duration-input" id="cfg-a-duration" type="number" min="0"  placeholder="30" />
+      </div>
+      <div class="duration-field">
+        <label>Image Duration</label>
+        <input class="duration-input" id="cfg-img-duration" type="number" min="1" placeholder="30" />
+      </div>
+    </div>
+    <button class="btn-primary" style="width:100%" onclick="saveTriviaSettings()">SAVE TIMING</button>
+
+    <div class="section-label">QUESTIONS (<span id="q-count">0</span> total)</div>
+    <div class="question-list" id="question-list"></div>
+
+    <div class="section-label">ADD QUESTION</div>
+    <div class="add-q-form">
+      <textarea class="text-input add-q-form" id="new-question" placeholder="Question…" rows="2" style="resize:vertical"></textarea>
+      <input class="text-input" id="new-answer" type="text" placeholder="Answer (optional)…" />
+      <button class="btn-primary" style="width:100%" onclick="addQuestion()">ADD QUESTION</button>
+    </div>
+
+    <div class="section-label">IMPORT FROM CSV</div>
+    <label class="import-label">
+      ☠ CHOOSE CSV FILE
+      <input type="file" accept=".csv" style="display:none" onchange="importCSV(this)" />
+    </label>
+    <div class="import-hint">One question per line: question,answer</div>
+
+    <button class="btn-nuclear" onclick="clearQuestions()">☠ CLEAR ALL QUESTIONS</button>
+  </div>
+
 </div>
 
 <div class="toast" id="toast"></div>
@@ -247,25 +439,136 @@
   const POST   = (path, b) => api('POST',   path, b);
   const DELETE = path      => api('DELETE', path);
 
-  // ── DISPLAY ──────────────────────────────────────────────────────────────
-  let prevRanks    = {};
-  let lastCelebId  = null;
-  let celebPlaying = false;
+  // ════════════════════════════════════════════════════════════════════════
+  // DISPLAY SCREEN
+  // ════════════════════════════════════════════════════════════════════════
+  let prevRanks     = {};
+  let lastCelebId   = null;
+  let celebPlaying  = false;
+
+  // Trivia state (client-side timer)
+  let triviaStartMs       = Date.now();
+  let triviaConfigSig     = null;
+  let triviaImages        = [];
+  let currentTriviaImgIdx = 0;
+  let lastImgChangeMs     = Date.now();
 
   function initDisplay() {
     fetchAndRender();
-    setInterval(fetchAndRender, 3000);
+    setInterval(fetchAndRender, 3000);   // poll server
+    setInterval(tickTrivia, 1000);       // drive trivia timer locally
   }
 
   async function fetchAndRender() {
     try {
       const state = await GET('/state');
-      renderDisplay(state);
+      renderLeaderboard(state);
       handleCelebration(state.celebration);
+      applyTriviaConfig(state.trivia);
     } catch (e) { console.error('Display poll error', e); }
   }
 
-  function renderDisplay({ crawlers, settings }) {
+  // Called every second to update the trivia panel without a server round-trip
+  function tickTrivia() {
+    if (!window._triviaState) return;
+    renderTriviaPanel(window._triviaState);
+  }
+
+  function applyTriviaConfig(trivia) {
+    if (!trivia) return;
+
+    // Detect config changes → reset timer
+    const sig = JSON.stringify({
+      enabled: trivia.enabled,
+      qi: trivia.questionInterval,
+      qd: trivia.questionDuration,
+      ad: trivia.answerDuration,
+      id: trivia.imageDuration,
+      ids: trivia.questions.map(q => q.id).join(','),
+    });
+    if (sig !== triviaConfigSig) {
+      triviaConfigSig     = sig;
+      triviaStartMs       = Date.now();
+      currentTriviaImgIdx = 0;
+      lastImgChangeMs     = Date.now();
+      // Fetch rotating images if not yet loaded (or on config change)
+      fetch('/api/trivia/images')
+        .then(r => r.json())
+        .then(d => { triviaImages = d.images || []; })
+        .catch(() => { triviaImages = []; });
+    }
+
+    window._triviaState = trivia;
+    renderTriviaPanel(trivia);
+  }
+
+  function renderTriviaPanel(trivia) {
+    const body = document.getElementById('display-body');
+
+    if (!trivia.enabled || trivia.questions.length === 0) {
+      body.className = 'display-body full';
+      return;
+    }
+    body.className = 'display-body split';
+
+    const elapsedSec  = (Date.now() - triviaStartMs) / 1000;
+    const cycle       = trivia.questionInterval;
+    const posInCycle  = elapsedSec % cycle;
+    const cycleNum    = Math.floor(elapsedSec / cycle);
+    const qIdx        = cycleNum % trivia.questions.length;
+    const q           = trivia.questions[qIdx];
+
+    const idle    = document.getElementById('trivia-idle');
+    const imgWrap = document.getElementById('trivia-img-wrap');
+    const content = document.getElementById('trivia-content');
+    const label   = document.getElementById('trivia-phase-label');
+    const main    = document.getElementById('trivia-main-text');
+    const answer  = document.getElementById('trivia-answer-text');
+
+    if (posInCycle < trivia.questionDuration) {
+      // — Show question —
+      idle.classList.add('hidden');
+      imgWrap.classList.add('hidden');
+      content.classList.remove('hidden');
+      label.textContent = '— TRIVIA —';
+      main.textContent  = q.question;
+      answer.classList.add('hidden');
+      answer.textContent = '';
+
+    } else if (posInCycle < trivia.questionDuration + trivia.answerDuration && q.answer) {
+      // — Show answer —
+      idle.classList.add('hidden');
+      imgWrap.classList.add('hidden');
+      content.classList.remove('hidden');
+      label.textContent = '— ANSWER —';
+      main.textContent  = q.question;
+      answer.classList.remove('hidden');
+      answer.textContent = q.answer;
+
+    } else {
+      // — Show rotating images —
+      content.classList.add('hidden');
+
+      if (triviaImages.length === 0) {
+        idle.classList.remove('hidden');
+        imgWrap.classList.add('hidden');
+      } else {
+        idle.classList.add('hidden');
+        imgWrap.classList.remove('hidden');
+
+        const now = Date.now();
+        if (now - lastImgChangeMs >= trivia.imageDuration * 1000) {
+          currentTriviaImgIdx = (currentTriviaImgIdx + 1) % triviaImages.length;
+          lastImgChangeMs = now;
+        }
+        const imgEl = document.getElementById('trivia-img');
+        const src   = '/trivia-images/' + encodeURIComponent(triviaImages[currentTriviaImgIdx]);
+        if (imgEl.src !== location.origin + src) imgEl.src = src;
+      }
+    }
+  }
+
+  function renderLeaderboard({ crawlers, settings }) {
     document.getElementById('disp-title-1').textContent  = settings.title1;
     document.getElementById('disp-title-2').textContent  = settings.title2;
     document.getElementById('disp-subtitle').textContent = settings.subtitle;
@@ -273,7 +576,7 @@
     const banner    = document.getElementById('display-banner');
     const bannerImg = document.getElementById('banner-img');
     if (settings.bannerImage) {
-      bannerImg.src       = '/images/' + encodeURIComponent(settings.bannerImage);
+      bannerImg.src        = '/images/' + encodeURIComponent(settings.bannerImage);
       banner.style.display = 'block';
     } else {
       banner.style.display = 'none';
@@ -307,24 +610,12 @@
     if (!celeb || celeb.id === lastCelebId || celebPlaying) return;
     lastCelebId  = celeb.id;
     celebPlaying = true;
-
     const overlay    = document.getElementById('celebration');
     const celebImg   = document.getElementById('celeb-img');
     const celebAudio = document.getElementById('celeb-audio');
-
-    if (celeb.image) {
-      celebImg.src          = '/images/' + encodeURIComponent(celeb.image);
-      celebImg.style.display = 'block';
-    } else {
-      celebImg.style.display = 'none';
-    }
-
-    if (celeb.audio) {
-      celebAudio.src         = '/audio/' + encodeURIComponent(celeb.audio);
-      celebAudio.currentTime = 0;
-      celebAudio.play().catch(() => {});
-    }
-
+    if (celeb.image) { celebImg.src = '/images/' + encodeURIComponent(celeb.image); celebImg.style.display = 'block'; }
+    else             { celebImg.style.display = 'none'; }
+    if (celeb.audio) { celebAudio.src = '/audio/' + encodeURIComponent(celeb.audio); celebAudio.currentTime = 0; celebAudio.play().catch(() => {}); }
     overlay.classList.add('active');
     setTimeout(async () => {
       overlay.classList.remove('active');
@@ -333,7 +624,9 @@
     }, 3000);
   }
 
-  // ── ADMIN ────────────────────────────────────────────────────────────────
+  // ════════════════════════════════════════════════════════════════════════
+  // ADMIN SCREEN
+  // ════════════════════════════════════════════════════════════════════════
   let selectedId  = null;
   let adminState  = null;
   let availImages = [];
@@ -343,33 +636,19 @@
     let stateRes;
     try {
       stateRes = await fetch('/api/state');
-    } catch (e) {
-      toast('Network error — is the server running?');
-      return;
-    }
-    if (!stateRes.ok) {
-      toast('Server error ' + stateRes.status);
-      return;
-    }
-    try {
-      adminState = await stateRes.json();
-    } catch (e) {
-      toast('Bad response from server');
-      return;
-    }
+    } catch (e) { toast('Network error — is the server running?'); return; }
+    if (!stateRes.ok) { toast('Server error ' + stateRes.status); return; }
+    try { adminState = await stateRes.json(); }
+    catch (e) { toast('Bad response from server'); return; }
     renderAdminLists();
     updateUndoUI();
+    renderTriviaAdmin();
   }
 
+  // ── Media helpers ────────────────────────────────────────────────────────
   async function loadMediaAndPopulate() {
-    try {
-      const r = await fetch('/api/images');
-      availImages = (await r.json()).images || [];
-    } catch { availImages = []; }
-    try {
-      const r = await fetch('/api/audio');
-      availAudio = (await r.json()).audio || [];
-    } catch { availAudio = []; }
+    try { const r = await fetch('/api/images'); availImages = (await r.json()).images || []; } catch { availImages = []; }
+    try { const r = await fetch('/api/audio');  availAudio  = (await r.json()).audio  || []; } catch { availAudio  = []; }
     populateSettingsUI();
   }
 
@@ -378,7 +657,6 @@
     document.getElementById('cfg-title1').value   = s.title1   || '';
     document.getElementById('cfg-title2').value   = s.title2   || '';
     document.getElementById('cfg-subtitle').value = s.subtitle || '';
-
     buildSelect('cfg-banner',      availImages, s.bannerImage,       '— None —');
     buildSelect('cfg-celeb-image', availImages, s.celebrationImage,  '— None —');
     buildSelect('cfg-celeb-audio', availAudio,  s.celebrationAudio,  '— None —');
@@ -390,6 +668,18 @@
       files.map(f => `<option value="${esc(f)}"${current === f ? ' selected' : ''}>${esc(f)}</option>`).join('');
   }
 
+  // ── Panel toggles ────────────────────────────────────────────────────────
+  async function togglePanel(name) {
+    const panel  = document.getElementById(name + '-panel' + (name === 'trivia' ? '-admin' : ''));
+    const toggle = document.getElementById(name + '-toggle');
+    const opening = panel.classList.contains('hidden');
+    panel.classList.toggle('hidden');
+    toggle.classList.toggle('open', opening);
+    if (opening && name === 'settings') await loadMediaAndPopulate();
+    if (opening && name === 'trivia')   renderTriviaAdmin();
+  }
+
+  // ── Crawler lists ────────────────────────────────────────────────────────
   function renderAdminLists() {
     if (!adminState) return;
     const { crawlers } = adminState;
@@ -422,7 +712,6 @@
       el.addEventListener('click', () => { selectedId = c.id; renderAdminLists(); });
       al.appendChild(el);
     });
-
     document.querySelectorAll('.pt-btn').forEach(b => b.disabled = !selectedId);
   }
 
@@ -444,54 +733,33 @@
     const input = document.getElementById('new-name');
     const name  = input.value.trim();
     if (!name) return;
-    try {
-      adminState = await POST('/crawlers', { name });
-      input.value = '';
-      renderAdminLists();
-      toast('Added: ' + name);
-    } catch { toast('Error adding crawler'); }
+    try { adminState = await POST('/crawlers', { name }); input.value = ''; renderAdminLists(); toast('Added: ' + name); }
+    catch { toast('Error adding crawler'); }
   }
-
-  document.getElementById('new-name').addEventListener('keydown', e => {
-    if (e.key === 'Enter') addCrawler();
-  });
+  document.getElementById('new-name').addEventListener('keydown', e => { if (e.key === 'Enter') addCrawler(); });
 
   async function removeCrawler(id) {
     if (!confirm('Remove this crawler?')) return;
-    try {
-      adminState = await DELETE('/crawlers/' + id);
-      if (selectedId === id) selectedId = null;
-      renderAdminLists();
-    } catch { toast('Error removing crawler'); }
+    try { adminState = await DELETE('/crawlers/' + id); if (selectedId === id) selectedId = null; renderAdminLists(); }
+    catch { toast('Error removing crawler'); }
   }
 
   async function award(pts) {
     if (!selectedId) return;
     try {
       adminState = await POST('/crawlers/' + selectedId + '/points', { delta: pts });
-      renderAdminLists();
-      updateUndoUI();
+      renderAdminLists(); updateUndoUI();
       const c = adminState.crawlers.find(x => x.id === selectedId);
       toast(`+${pts} → ${c ? c.name : '?'}`);
     } catch { toast('Error awarding points'); }
   }
 
   async function undoLast() {
-    try {
-      adminState = await POST('/undo', {});
-      renderAdminLists();
-      updateUndoUI();
-      toast('Undone!');
-    } catch { toast('Nothing to undo'); }
+    try { adminState = await POST('/undo', {}); renderAdminLists(); updateUndoUI(); toast('Undone!'); }
+    catch { toast('Nothing to undo'); }
   }
 
-  async function toggleSettings() {
-    const panel   = document.getElementById('settings-panel');
-    const opening = panel.classList.contains('hidden');
-    panel.classList.toggle('hidden');
-    if (opening) await loadMediaAndPopulate();
-  }
-
+  // ── Settings ─────────────────────────────────────────────────────────────
   async function saveSettings() {
     const payload = {
       title1:           document.getElementById('cfg-title1').value,
@@ -501,31 +769,127 @@
       celebrationImage: document.getElementById('cfg-celeb-image').value,
       celebrationAudio: document.getElementById('cfg-celeb-audio').value,
     };
-    try {
-      adminState = await POST('/settings', payload);
-      toast('Settings saved!');
-    } catch { toast('Error saving settings'); }
+    try { adminState = await POST('/settings', payload); toast('Settings saved!'); }
+    catch { toast('Error saving settings'); }
   }
 
   async function resetPoints() {
     if (prompt('Type RESET to confirm:') !== 'RESET') return;
-    try {
-      adminState = await POST('/reset-points', { confirm: 'RESET' });
-      renderAdminLists();
-      updateUndoUI();
-      toast('All points reset!');
-    } catch { toast('Error'); }
+    try { adminState = await POST('/reset-points', { confirm: 'RESET' }); renderAdminLists(); updateUndoUI(); toast('All points reset!'); }
+    catch { toast('Error'); }
   }
 
   async function clearAll() {
     if (prompt('Type RESET to confirm:') !== 'RESET') return;
+    try { adminState = await POST('/clear-all', { confirm: 'RESET' }); selectedId = null; renderAdminLists(); updateUndoUI(); toast('All crawlers cleared!'); }
+    catch { toast('Error'); }
+  }
+
+  // ── Trivia admin ──────────────────────────────────────────────────────────
+  function renderTriviaAdmin() {
+    if (!adminState || !adminState.trivia) return;
+    const t = adminState.trivia;
+
+    // Enable button state
+    const btn = document.getElementById('trivia-enable-btn');
+    btn.textContent = t.enabled ? 'ENABLED' : 'DISABLED';
+    btn.className   = 'btn-toggle' + (t.enabled ? ' on' : '');
+
+    // Duration fields
+    document.getElementById('cfg-q-interval').value  = t.questionInterval;
+    document.getElementById('cfg-q-duration').value  = t.questionDuration;
+    document.getElementById('cfg-a-duration').value  = t.answerDuration;
+    document.getElementById('cfg-img-duration').value = t.imageDuration;
+
+    // Questions
+    document.getElementById('q-count').textContent = t.questions.length;
+    const list = document.getElementById('question-list');
+    list.innerHTML = '';
+    if (t.questions.length === 0) {
+      list.innerHTML = '<div style="color:#ffffff33;font-size:0.85rem;text-align:center;padding:0.75rem">No questions yet</div>';
+    } else {
+      t.questions.forEach((q, i) => {
+        const el = document.createElement('div');
+        el.className = 'question-item';
+        el.innerHTML = `
+          <div class="question-num">${i + 1}</div>
+          <div class="question-body">
+            <div class="question-text">${esc(q.question)}</div>
+            ${q.answer ? `<div class="question-answer">A: ${esc(q.answer)}</div>` : ''}
+          </div>
+          <button class="btn-danger">✕</button>`;
+        el.querySelector('.btn-danger').addEventListener('click', () => deleteQuestion(q.id));
+        list.appendChild(el);
+      });
+    }
+  }
+
+  async function toggleTriviaEnabled() {
+    if (!adminState) return;
+    const enabled = !adminState.trivia.enabled;
     try {
-      adminState = await POST('/clear-all', { confirm: 'RESET' });
-      selectedId = null;
-      renderAdminLists();
-      updateUndoUI();
-      toast('All crawlers cleared!');
-    } catch { toast('Error'); }
+      adminState = await POST('/trivia/settings', { enabled });
+      renderTriviaAdmin();
+      toast(enabled ? 'Trivia enabled!' : 'Trivia disabled');
+    } catch { toast('Error updating trivia'); }
+  }
+
+  async function saveTriviaSettings() {
+    const payload = {
+      questionInterval: parseInt(document.getElementById('cfg-q-interval').value)  || 600,
+      questionDuration: parseInt(document.getElementById('cfg-q-duration').value)  || 120,
+      answerDuration:   parseInt(document.getElementById('cfg-a-duration').value)  || 30,
+      imageDuration:    parseInt(document.getElementById('cfg-img-duration').value) || 30,
+    };
+    try { adminState = await POST('/trivia/settings', payload); renderTriviaAdmin(); toast('Trivia timing saved!'); }
+    catch { toast('Error saving trivia settings'); }
+  }
+
+  async function addQuestion() {
+    const qInput = document.getElementById('new-question');
+    const aInput = document.getElementById('new-answer');
+    const q = qInput.value.trim();
+    if (!q) { toast('Enter a question first'); return; }
+    try {
+      adminState = await POST('/trivia/questions', { question: q, answer: aInput.value.trim() || null });
+      qInput.value = '';
+      aInput.value = '';
+      renderTriviaAdmin();
+      toast('Question added!');
+    } catch { toast('Error adding question'); }
+  }
+
+  async function deleteQuestion(id) {
+    try { adminState = await DELETE('/trivia/questions/' + id); renderTriviaAdmin(); toast('Question removed'); }
+    catch { toast('Error removing question'); }
+  }
+
+  async function importCSV(input) {
+    const file = input.files[0];
+    if (!file) return;
+    const form = new FormData();
+    form.append('file', file);
+    try {
+      const res  = await fetch('/api/trivia/import', { method: 'POST', body: form });
+      const data = await res.json();
+      adminState = await GET('/state');
+      renderTriviaAdmin();
+      toast(`Imported ${data.added} questions (${data.total} total)`);
+    } catch { toast('Error importing CSV'); }
+    input.value = '';
+  }
+
+  async function clearQuestions() {
+    if (prompt('Type RESET to confirm clearing all trivia questions:') !== 'RESET') return;
+    try {
+      // Delete all questions one by one
+      const ids = [...adminState.trivia.questions.map(q => q.id)];
+      for (const id of ids) {
+        adminState = await DELETE('/trivia/questions/' + id);
+      }
+      renderTriviaAdmin();
+      toast('All questions cleared!');
+    } catch { toast('Error clearing questions'); }
   }
 
   // ── Utils ────────────────────────────────────────────────────────────────
@@ -538,7 +902,7 @@
     el.textContent = msg;
     el.classList.add('show');
     clearTimeout(toastTimer);
-    toastTimer = setTimeout(() => el.classList.remove('show'), 2200);
+    toastTimer = setTimeout(() => el.classList.remove('show'), 2500);
   }
 </script>
 </body>

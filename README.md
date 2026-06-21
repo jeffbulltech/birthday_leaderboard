@@ -52,6 +52,15 @@ deactivate
 
 - Drop image files (`.jpg`, `.png`, `.gif`, `.webp`) into `images/`
 - Drop audio files (`.mp3`, `.wav`, `.m4a`, `.ogg`) into `audio/`
+- Drop rotating trivia images into `assets/images/rotating_trivia_images/`
+
+#### Suggested image aspect ratios
+
+| Image type | Where it appears | Suggested ratio | Notes |
+|---|---|---|---|
+| **Banner image** | Top of the TV display screen | **6:1 to 8:1** (wide landscape) | e.g. 1920×280 px. Taller images will be cropped. |
+| **Celebration image** | Fullscreen overlay on point award | **1:1** (square) | Displayed centered with letterboxing; square fills the most screen space. |
+| **Rotating trivia images** | Left half of screen during trivia | **9:16** (portrait) | The trivia panel is a tall, narrow column. Portrait images fill it best; landscape images will be cropped on the sides. |
 
 ### 3. Run the server
 

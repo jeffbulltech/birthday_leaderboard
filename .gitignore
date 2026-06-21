@@ -4,8 +4,10 @@ state.json
 # Media — add your own files locally, don't commit them
 images/*
 audio/*
+assets/images/rotating_trivia_images/*
 !images/.gitkeep
 !audio/.gitkeep
+!assets/images/rotating_trivia_images/.gitkeep
 
 # Python
 __pycache__/

@@ -4,35 +4,46 @@ DCC Leaderboard server — Jeff's 47th
 Run: python3 server.py
 Then open http://<your-mac-ip>:5500 on any device on the same WiFi.
 """
-import json, os, time
+import csv, io, json, os, time
 from pathlib import Path
 from typing import Optional
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, UploadFile, File
 from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 import uvicorn
 
-HERE       = Path(__file__).parent
-STATE_FILE = HERE / "state.json"
-IMAGES_DIR = HERE / "images"
-AUDIO_DIR  = HERE / "audio"
-IMAGE_EXTS = {".jpg", ".jpeg", ".png", ".gif", ".webp"}
-AUDIO_EXTS = {".mp3", ".wav", ".m4a", ".ogg"}
+HERE              = Path(__file__).parent
+STATE_FILE        = HERE / "state.json"
+IMAGES_DIR        = HERE / "images"
+AUDIO_DIR         = HERE / "audio"
+TRIVIA_IMAGES_DIR = HERE / "assets" / "images" / "rotating_trivia_images"
+IMAGE_EXTS        = {".jpg", ".jpeg", ".png", ".gif", ".webp"}
+AUDIO_EXTS        = {".mp3", ".wav", ".m4a", ".ogg"}
+
+DEFAULT_TRIVIA = {
+    "enabled":          False,
+    "questionInterval": 600,   # seconds between question starts
+    "questionDuration": 120,   # seconds question is shown
+    "answerDuration":   30,    # seconds answer is shown
+    "imageDuration":    30,    # seconds per rotating image
+    "questions":        [],    # [{id, question, answer}]
+}
 
 DEFAULT_STATE = {
     "crawlers": [],
     "settings": {
-        "title1": "PARTY-GOER RANKINGS",
-        "title2": "JEFF'S 47TH",
-        "subtitle": "Floor 47 · Dungeons & Degeneracy",
+        "title1":           "PARTY-GOER RANKINGS",
+        "title2":           "JEFF'S 47TH",
+        "subtitle":         "Floor 47 · Dungeons & Degeneracy",
         "bannerImage":      None,
         "celebrationImage": None,
         "celebrationAudio": None,
     },
-    "lastAction": None,
-    "celebration": None,  # {id, image, audio} consumed by display screen
+    "lastAction":  None,
+    "celebration": None,
+    "trivia":      DEFAULT_TRIVIA,
 }
 
 def load_state():
@@ -43,6 +54,16 @@ def load_state():
             s["settings"].setdefault("bannerImage",      None)
             s["settings"].setdefault("celebrationImage", None)
             s["settings"].setdefault("celebrationAudio", None)
+            if "trivia" not in s:
+                s["trivia"] = json.loads(json.dumps(DEFAULT_TRIVIA))
+            else:
+                t = s["trivia"]
+                t.setdefault("enabled",          DEFAULT_TRIVIA["enabled"])
+                t.setdefault("questionInterval", DEFAULT_TRIVIA["questionInterval"])
+                t.setdefault("questionDuration", DEFAULT_TRIVIA["questionDuration"])
+                t.setdefault("answerDuration",   DEFAULT_TRIVIA["answerDuration"])
+                t.setdefault("imageDuration",    DEFAULT_TRIVIA["imageDuration"])
+                t.setdefault("questions",        [])
             return s
         except Exception:
             pass
@@ -61,8 +82,10 @@ app.add_middleware(CORSMiddleware, allow_origins=["*"], allow_methods=["*"], all
 
 IMAGES_DIR.mkdir(exist_ok=True)
 AUDIO_DIR.mkdir(exist_ok=True)
-app.mount("/images", StaticFiles(directory=str(IMAGES_DIR)), name="images")
-app.mount("/audio",  StaticFiles(directory=str(AUDIO_DIR)),  name="audio")
+TRIVIA_IMAGES_DIR.mkdir(parents=True, exist_ok=True)
+app.mount("/images",        StaticFiles(directory=str(IMAGES_DIR)),        name="images")
+app.mount("/audio",         StaticFiles(directory=str(AUDIO_DIR)),         name="audio")
+app.mount("/trivia-images", StaticFiles(directory=str(TRIVIA_IMAGES_DIR)), name="trivia-images")
 
 # ── Models ───────────────────────────────────────────────────────────────────
 
@@ -83,7 +106,18 @@ class SettingsReq(BaseModel):
 class ConfirmReq(BaseModel):
     confirm: str
 
-# ── API ──────────────────────────────────────────────────────────────────────
+class TriviaSettingsReq(BaseModel):
+    enabled:          Optional[bool] = None
+    questionInterval: Optional[int]  = None
+    questionDuration: Optional[int]  = None
+    answerDuration:   Optional[int]  = None
+    imageDuration:    Optional[int]  = None
+
+class AddQuestionReq(BaseModel):
+    question: str
+    answer:   Optional[str] = None
+
+# ── Leaderboard API ──────────────────────────────────────────────────────────
 
 @app.get("/api/state")
 def get_state():
@@ -149,12 +183,12 @@ def undo():
 @app.post("/api/settings")
 def update_settings(req: SettingsReq):
     state = load_state()
-    if req.title1           is not None: state["settings"]["title1"]            = req.title1
-    if req.title2           is not None: state["settings"]["title2"]            = req.title2
-    if req.subtitle         is not None: state["settings"]["subtitle"]          = req.subtitle
-    if req.bannerImage      is not None: state["settings"]["bannerImage"]       = req.bannerImage      or None
-    if req.celebrationImage is not None: state["settings"]["celebrationImage"]  = req.celebrationImage or None
-    if req.celebrationAudio is not None: state["settings"]["celebrationAudio"]  = req.celebrationAudio or None
+    if req.title1           is not None: state["settings"]["title1"]           = req.title1
+    if req.title2           is not None: state["settings"]["title2"]           = req.title2
+    if req.subtitle         is not None: state["settings"]["subtitle"]         = req.subtitle
+    if req.bannerImage      is not None: state["settings"]["bannerImage"]      = req.bannerImage      or None
+    if req.celebrationImage is not None: state["settings"]["celebrationImage"] = req.celebrationImage or None
+    if req.celebrationAudio is not None: state["settings"]["celebrationAudio"] = req.celebrationAudio or None
     save_state(state)
     return state
 
@@ -185,6 +219,71 @@ def clear_all(req: ConfirmReq):
     state["lastAction"] = None
     save_state(state)
     return state
+
+# ── Trivia API ───────────────────────────────────────────────────────────────
+
+@app.get("/api/trivia/images")
+def get_trivia_images():
+    return {"images": list_files(TRIVIA_IMAGES_DIR, IMAGE_EXTS)}
+
+@app.post("/api/trivia/settings")
+def update_trivia_settings(req: TriviaSettingsReq):
+    state = load_state()
+    t = state["trivia"]
+    if req.enabled          is not None: t["enabled"]          = req.enabled
+    if req.questionInterval is not None: t["questionInterval"] = max(1, req.questionInterval)
+    if req.questionDuration is not None: t["questionDuration"] = max(1, req.questionDuration)
+    if req.answerDuration   is not None: t["answerDuration"]   = max(0, req.answerDuration)
+    if req.imageDuration    is not None: t["imageDuration"]    = max(1, req.imageDuration)
+    save_state(state)
+    return state
+
+@app.post("/api/trivia/questions")
+def add_question(req: AddQuestionReq):
+    q = req.question.strip()
+    if not q:
+        raise HTTPException(400, "Question required")
+    state = load_state()
+    state["trivia"]["questions"].append({
+        "id":       os.urandom(4).hex(),
+        "question": q,
+        "answer":   req.answer.strip() if req.answer and req.answer.strip() else None,
+    })
+    save_state(state)
+    return state
+
+@app.delete("/api/trivia/questions/{question_id}")
+def delete_question(question_id: str):
+    state = load_state()
+    state["trivia"]["questions"] = [
+        q for q in state["trivia"]["questions"] if q["id"] != question_id
+    ]
+    save_state(state)
+    return state
+
+@app.post("/api/trivia/import")
+async def import_questions(file: UploadFile = File(...)):
+    content = await file.read()
+    try:
+        text = content.decode("utf-8-sig")
+    except Exception:
+        text = content.decode("latin-1")
+    reader = csv.reader(io.StringIO(text))
+    state  = load_state()
+    added  = 0
+    for row in reader:
+        if not row or not row[0].strip():
+            continue
+        q = row[0].strip()
+        a = row[1].strip() if len(row) > 1 and row[1].strip() else None
+        state["trivia"]["questions"].append({
+            "id":       os.urandom(4).hex(),
+            "question": q,
+            "answer":   a,
+        })
+        added += 1
+    save_state(state)
+    return {"added": added, "total": len(state["trivia"]["questions"])}
 
 # ── Static ───────────────────────────────────────────────────────────────────
 
@@ -221,7 +320,7 @@ if __name__ == "__main__":
     print(f"{'='*50}")
     print(f"  Local:   http://localhost:5500")
     print(f"  Network: http://{local_ip}:5500")
-    print(f"\n  TV Display: http://{local_ip}:5500?screen=display")
+    print(f"\n  TV Display:   http://{local_ip}:5500?screen=display")
     print(f"  iPhone Admin: http://{local_ip}:5500?screen=admin")
     print(f"{'='*50}\n")
     uvicorn.run(app, host="0.0.0.0", port=5500)

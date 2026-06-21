@@ -1,7 +1,8 @@
 <p align="center">
   <img src="./assets/images/DCC_banner_image.png" alt="Project Banner" width="100%">
 </p>
-# DCC Party Leaderboard
+
+# Dungeon Crawler Carl themed party-in-a-box
 
 A real-time party leaderboard app built for **Jeff's 47th Birthday — Dungeons & Degeneracy**. Two-screen browser app: a TV display screen for the room and a mobile admin panel for awarding points on the fly.
 

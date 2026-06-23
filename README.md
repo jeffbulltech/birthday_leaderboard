@@ -60,7 +60,7 @@ deactivate
 |---|---|---|---|
 | **Banner image** | Top of the TV display screen | **6:1 to 8:1** (wide landscape) | e.g. 1920×280 px. Taller images will be cropped. |
 | **Celebration image** | Fullscreen overlay on point award | **1:1** (square) | Displayed centered with letterboxing; square fills the most screen space. |
-| **Rotating trivia images** | Left half of screen during trivia | **9:16** (portrait) | The trivia panel is a tall, narrow column. Portrait images fill it best; landscape images will be cropped on the sides. |
+| **Rotating trivia images** | Left half of screen during trivia | **1:1** (square) | The trivia panel is roughly as wide as it is tall on a 1080p display (half the screen width × full content height). Square images fill it with minimal cropping. |
 
 ### 3. Run the server
 

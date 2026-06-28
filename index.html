@@ -49,7 +49,7 @@
     /* ── LEADERBOARD PANEL ── */
     .lb-panel { display: flex; flex-direction: column; }
     .display-header { text-align: center; margin-bottom: 0.8rem; }
-    .display-title-1 { font-family: 'Bangers', cursive; font-size: clamp(1.6rem, 4.5vw, 4rem); color: #FF1F8E; letter-spacing: 6px; text-shadow: 3px 3px 0 #000, 0 0 40px #FF1F8EAA; line-height: 1; }
+    .display-title-1 { font-family: 'Bangers', cursive; font-size: clamp(1.6rem, 4.5vw, 4rem); color: #FF1F8E; letter-spacing: 6px; text-shadow: 3px 3px 0 #000, 0 0 10px #FF1F8E44; line-height: 1; }
     .display-title-2 { font-family: 'Bangers', cursive; font-size: clamp(1.1rem, 3vw, 2.5rem); color: #FFD93D; letter-spacing: 6px; text-shadow: 2px 2px 0 #000; line-height: 1.2; }
     .display-subtitle { font-size: clamp(0.65rem, 1.5vw, 1rem); color: #F5E6C8; letter-spacing: 3px; text-transform: uppercase; margin-top: 0.3rem; opacity: 0.7; }
     .divider { border: none; border-top: 2px solid #FF1F8E44; margin: 0.5rem 0; }
@@ -59,7 +59,7 @@
     .lb-row.rank-1 { background: linear-gradient(90deg, #FFD93D18, transparent); }
     .lb-row.glow { animation: rowGlow 0.8s ease-out; }
     @keyframes rowGlow { 0% { background: #FF1F8E44; } 100% { background: transparent; } }
-    .lb-rank   { font-family: 'Bangers', cursive; font-size: clamp(1.4rem, 3vw, 2.5rem); color: #FF1F8E; text-shadow: 0 0 10px #FF1F8E88; }
+    .lb-rank   { font-family: 'Bangers', cursive; font-size: clamp(1.4rem, 3vw, 2.5rem); color: #FF1F8E; text-shadow: 0 0 6px #FF1F8E44; }
     .lb-row.rank-1 .lb-rank   { color: #FFD93D; text-shadow: 0 0 20px #FFD93DAA; font-size: clamp(1.7rem, 3.5vw, 3rem); }
     .lb-name   { font-family: 'Bangers', cursive; font-size: clamp(1.1rem, 2.5vw, 2.2rem); color: #F5E6C8; letter-spacing: 2px; padding: 0 0.5rem; text-shadow: 2px 2px 0 #000; }
     .lb-row.rank-1 .lb-name   { color: #FFD93D; font-size: clamp(1.4rem, 3vw, 2.6rem); }
@@ -86,10 +86,10 @@
     .trivia-content.hidden { display: none; }
     .trivia-phase-label {
       font-family: 'Bangers', cursive;
-      font-size: clamp(1rem, 2vw, 1.6rem);
+      font-size: clamp(1.4rem, 2.8vw, 2.2rem);
       color: #FF1F8E;
       letter-spacing: 6px;
-      text-shadow: 0 0 20px #FF1F8E88;
+      text-shadow: 0 0 8px #FF1F8E44;
       margin-bottom: 1.5rem;
       text-transform: uppercase;
     }
@@ -322,6 +322,9 @@
       <button class="btn-undo" id="undo-btn" onclick="undoLast()" disabled>↩ UNDO</button>
       <span class="undo-label" id="undo-label">No recent action</span>
     </div>
+    <div style="margin-top:1rem">
+      <button class="btn-nuclear" onclick="resetPoints()">☠ RESET ALL POINTS</button>
+    </div>
   </div>
 
   <!-- SETTINGS panel -->
@@ -487,8 +490,10 @@
       ids: trivia.questions.map(q => q.id).join(','),
     });
     if (sig !== triviaConfigSig) {
-      triviaConfigSig     = sig;
-      triviaStartMs       = Date.now();
+      triviaConfigSig = sig;
+      const saved = localStorage.getItem('triviaStart_' + sig);
+      triviaStartMs       = saved ? parseInt(saved, 10) : Date.now();
+      if (!saved) localStorage.setItem('triviaStart_' + sig, triviaStartMs);
       currentTriviaImgIdx = 0;
       lastImgChangeMs     = Date.now();
       // Fetch rotating images if not yet loaded (or on config change)
@@ -513,10 +518,10 @@
 
     const elapsedSec  = (Date.now() - triviaStartMs) / 1000;
     const cycle       = trivia.questionInterval;
-    const posInCycle  = elapsedSec % cycle;
     const cycleNum    = Math.floor(elapsedSec / cycle);
-    const qIdx        = cycleNum % trivia.questions.length;
-    const q           = trivia.questions[qIdx];
+    const posInCycle  = elapsedSec % cycle;
+    const allDone     = cycleNum >= trivia.questions.length;
+    const q           = allDone ? null : trivia.questions[cycleNum];
 
     const idle    = document.getElementById('trivia-idle');
     const imgWrap = document.getElementById('trivia-img-wrap');
@@ -525,28 +530,28 @@
     const main    = document.getElementById('trivia-main-text');
     const answer  = document.getElementById('trivia-answer-text');
 
-    if (posInCycle < trivia.questionDuration) {
+    if (!allDone && posInCycle < trivia.questionDuration) {
       // — Show question —
       idle.classList.add('hidden');
       imgWrap.classList.add('hidden');
       content.classList.remove('hidden');
-      label.textContent = '— TRIVIA —';
+      label.textContent = '— KNOW THE ANSWER? SHOUT IT OUT! —';
       main.textContent  = q.question;
       answer.classList.add('hidden');
       answer.textContent = '';
 
-    } else if (posInCycle < trivia.questionDuration + trivia.answerDuration && q.answer) {
+    } else if (!allDone && posInCycle < trivia.questionDuration + trivia.answerDuration && q.answer) {
       // — Show answer —
       idle.classList.add('hidden');
       imgWrap.classList.add('hidden');
       content.classList.remove('hidden');
-      label.textContent = '— ANSWER —';
+      label.textContent = '— KNOW THE ANSWER? SHOUT IT OUT! —';
       main.textContent  = q.question;
       answer.classList.remove('hidden');
       answer.textContent = q.answer;
 
     } else {
-      // — Show rotating images —
+      // — Show rotating images (between questions, or permanently once all questions exhausted) —
       content.classList.add('hidden');
 
       if (triviaImages.length === 0) {
